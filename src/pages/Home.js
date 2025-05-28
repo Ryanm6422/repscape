@@ -12,7 +12,7 @@ function Home() {
     return (
         <div>
             {clicked ?
-                <h1>Workout Created</h1>
+                <h1>Workout was Created</h1>
             : <h1>Create Workout</h1>}
             <h1>Welcome to RepScape</h1>
             <button onClick={handleClick}>Create Workout</button>
