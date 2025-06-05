@@ -6,7 +6,7 @@ function Home() {
     const [list, setList] = useState([]);
     const [thisExerciseIndex, setThisExerciseIndex] = useState(null);
     const [exerciseEdit, setExerciseEdit] = useState(null);
-    const [repEdit, setRepEdit] = useState(null);
+    const [repEdit, setRepEdit] = useState({exerciseIndex: null, repIndex: null});
     const [editText, setEditText] = useState("");
 
 
@@ -19,8 +19,8 @@ function Home() {
         setEditText(exercise);
     };
 
-    const handleRepEdit = (rep, repIndex) => {
-        setRepEdit(repIndex);
+    const handleRepEdit = (rep, exerciseInd, repInd) => {
+        setRepEdit({exerciseIndex: exerciseInd, repIndex: repInd});
         setEditText(rep);
     };
 
@@ -62,6 +62,36 @@ function Home() {
         setList(newItems);
     };
 
+    const editExercise = (indexToEdit) => {
+        if (!editText || editText.trim === "") return;
+        const newItems = list.map((exercise, index) => {
+            if (index === indexToEdit) {
+                return { exerciseName: editText, reps: exercise.reps};
+            }
+            else {
+                return exercise;
+            }
+        });
+        setList(newItems);
+        setEditText("");
+        setExerciseEdit(null);
+    };
+
+    const editReps = (indexToEdit, repIndexToEdit) => {
+        if (!editText || editText.trim === "") return;
+        const newItems = list[indexToEdit].reps.map((repNum, repIndex) => {
+            if (repIndex === repIndexToEdit) {
+                return editText;
+            }
+            else {
+                return repNum;
+            }
+        });
+        setList(newItems);
+        setEditText("");
+        setRepEdit({exerciseIndex: null, repIndex: null});
+    };
+
     return (
         <div>
             <h1>Welcome to SetWork!</h1>
@@ -95,17 +125,27 @@ function Home() {
                             <input 
                             value={editText}
                             onChange={(e) => setEditText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    editExercise(index);
+                                }
+                            }}
                             />
                             : <span>{exercise.exerciseName}</span>}</span>
                         <button onClick={() => deleteExercise(index)}>❌</button>
                         <button onClick = {() => setThisExerciseIndex(index)}>Select</button>
                         <ul>
                             {exercise.reps.map((rep, repIndex) => (
-                                <li key={repIndex}> Set {repIndex + 1}: <span onClick={() => handleRepEdit(rep, repIndex)}>                            
-                                {repIndex === repEdit ?
+                                <li key={repIndex}> Set {repIndex + 1}: <span onClick={() => handleRepEdit(rep, index, repIndex)}>                            
+                                {repIndex === repEdit.repIndex ?
                                 <input 
                                     value={editText}
                                     onChange={(e) => setEditText(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            editReps(index, repIndex);
+                                        }
+                                    }}
                                     />
                                     : <span>{rep} rep(s)</span>}</span>
                                 <button onClick = {() => deleteRep(index, repIndex)}>❌</button></li>
