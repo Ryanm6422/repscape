@@ -8,6 +8,7 @@ function Home() {
     const [exerciseEdit, setExerciseEdit] = useState(null);
     const [repEdit, setRepEdit] = useState({exerciseIndex: null, repIndex: null});
     const [editText, setEditText] = useState("");
+    const [workoutLog, setWorkoutLog] = useState([]);
 
 
     const handleText = (event) => {
@@ -62,6 +63,11 @@ function Home() {
         setList(newItems);
     };
 
+    const deleteWorkout = (indexToDelete) => {
+        const newItems = workoutLog.filter((_, index) => index !== indexToDelete);
+        setWorkoutLog(newItems);
+    };
+
     const editExercise = (indexToEdit) => {
         if (!editText || editText.trim === "") return;
         const newItems = list.map((exercise, index) => {
@@ -94,7 +100,7 @@ function Home() {
 
     return (
         <div>
-            <h1>Welcome to SetWork!</h1>
+            <h1>Welcome to RepScape!</h1>
             {/*{clicked ?
             <h1>You Added: {text}!</h1>
             : <h1>No Exercises</h1>}*/}
@@ -151,6 +157,32 @@ function Home() {
                                 <button onClick = {() => deleteRep(index, repIndex)}>❌</button></li>
                             ))}
                         </ul>
+                    </li>
+                ))}
+            </ul>
+            <button onClick = {() => {
+                if (list.length === 0) return;
+                const newWorkout = {
+                    date: new Date().toLocaleString(),
+                    exercises: list
+                };
+                setWorkoutLog(prev => [...prev, newWorkout]);
+                setList([]);
+            }}>Finish Workout
+            </button>
+            <h2>Workout History</h2>
+            <ul>
+                {workoutLog.map((workout, index) => (
+                    <li key={index}>
+                        <strong>{workout.date}</strong>
+                        <ul>
+                            {workout.exercises.map((exercise, i) => (
+                                <li key={i}>
+                                    {exercise.exerciseName} - {exercise.reps.length} sets
+                                </li>
+                            ))}
+                        </ul>
+                        <button onClick = {() => deleteWorkout(index)}>❌</button>
                     </li>
                 ))}
             </ul>
