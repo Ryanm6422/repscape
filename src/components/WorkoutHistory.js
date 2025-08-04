@@ -15,7 +15,7 @@ function WorkoutHistory({ workoutLog, setWorkoutLog }) {
                         <ul>
                             {workout.exercises.map((exercise, i) => (
                                 <li key={i}>
-                                    {exercise.exerciseName} - {exercise.reps.length} sets
+                                    {exercise.exerciseName} - {exercise.reps.length} {exercise.reps.length === 1 ? "set" : "sets"}
                                 </li>
                             ))}
                         </ul>
