@@ -8,6 +8,7 @@ function WorkoutBuilder({ list, setList }) {
     const [exerciseEdit, setExerciseEdit] = useState(null);
     const [repEdit, setRepEdit] = useState({exerciseIndex: null, repIndex: null});
     const [editText, setEditText] = useState("");
+    const [repEditText, setRepEditText] = useState("");
 
     const handleText = (event) => {
         setExerciseText(event.target.value);
@@ -20,7 +21,7 @@ function WorkoutBuilder({ list, setList }) {
 
     const handleRepEdit = (rep, exerciseInd, repInd) => {
         setRepEdit({exerciseIndex: exerciseInd, repIndex: repInd});
-        setEditText(rep);
+        setRepEditText(rep);
     };
 
     const addToList = () => {
@@ -77,12 +78,12 @@ function WorkoutBuilder({ list, setList }) {
     };
 
     const editReps = (indexToEdit, repIndexToEdit) => {
-        if (!editText || editText.trim === "") return;
+        if (!repEditText || repEditText.trim === "") return;
         const newItems = list.map((exercise, index) => {
             if (index === indexToEdit) {
                 const newRepList = exercise.reps.map((rep, repIndex) => {
                     if (repIndex === repIndexToEdit) {
-                        return {editText};
+                        return repEditText;
                     }
                     else {
                         return rep;
@@ -95,7 +96,7 @@ function WorkoutBuilder({ list, setList }) {
             }
         });
         setList(newItems);
-        setEditText("");
+        setRepEditText("");
         setRepEdit({exerciseIndex: null, repIndex: null});
     };
 
@@ -111,7 +112,7 @@ function WorkoutBuilder({ list, setList }) {
             <button onClick={addToList}>Add</button>
             <h2>Insert Reps: </h2>
             <input 
-                type="text"
+                type="number"
                 value={repText}
                 onChange={(e) => setRepText(e.target.value)}
                 placeholder="Enter text here"
@@ -139,17 +140,18 @@ function WorkoutBuilder({ list, setList }) {
                         <ul>
                             {exercise.reps.map((rep, repIndex) => (
                                 <li key={repIndex}> Set {repIndex + 1}: <span onClick={() => handleRepEdit(rep, index, repIndex)}>                            
-                                {repIndex === repEdit.repIndex ?
-                                <input 
-                                    value={editText}
-                                    onChange={(e) => setEditText(e.target.value)}
+                                {repIndex === repEdit.repIndex && index === repEdit.exerciseIndex ?
+                                <input
+                                    type="number"
+                                    value={repEditText}
+                                    onChange={(e) => setRepEditText(e.target.value)}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
                                             editReps(index, repIndex);
                                         }
                                     }}
                                     />
-                                    : <span>{rep} rep(s)</span>}</span>
+                                    : <span>{rep} {parseInt(rep) === 1 ? "rep" : "reps"}</span>}</span>
                                 <button onClick = {() => deleteRep(index, repIndex)}>❌</button></li>
                             ))}
                         </ul>
