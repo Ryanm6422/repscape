@@ -11,7 +11,8 @@ function WorkoutHistory({ workoutLog, setWorkoutLog }) {
             <ul>
                 {workoutLog.map((workout, index) => (
                     <li key={index}>
-                        <strong>{workout.date}</strong>
+                        <strong>{workout.name} <br />
+                        {workout.date}</strong>
                         <ul>
                             {workout.exercises.map((exercise, i) => (
                                 <li key={i}>

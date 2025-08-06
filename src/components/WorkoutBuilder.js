@@ -24,7 +24,7 @@ function WorkoutBuilder({ list, setList }) {
         setRepEditText(rep);
     };
 
-    const addToList = () => {
+    const addExercise = () => {
         if (!exerciseText || exerciseText.trim === "") return;
         setList([...list, {exerciseName: exerciseText, reps: []}]);
         setExerciseText("");
@@ -34,7 +34,6 @@ function WorkoutBuilder({ list, setList }) {
         if (!repText || repText.trim === "" || thisExerciseIndex === null || thisExerciseIndex >= list.length) return;
         setList(prevList =>
             prevList.map((exercise, index) => {
-                console.log("Before updating reps: ", prevList);
                 if (index === thisExerciseIndex) {
                     return { ...exercise, reps:[...exercise.reps, repText]};
                 } else {
@@ -109,7 +108,7 @@ function WorkoutBuilder({ list, setList }) {
                 onChange={handleText}
                 placeholder="Enter text here"
             />
-            <button onClick={addToList}>Add</button>
+            <button onClick={addExercise}>Add</button>
             <h2>Insert Reps: </h2>
             <input 
                 type="number"
