@@ -8,7 +8,6 @@ function Workout() {
     const [list, setList] = useState([]);
     const firstRender = useRef(true);
     const [workoutLog, setWorkoutLog] = useState([]);
-    const [templateLog, setTemplateLog] = useState([]);
     const [workoutText, setWorkoutText] = useState("");
     const [showPopUp, setShowPopUp] = useState(false);
 
@@ -22,6 +21,9 @@ function Workout() {
             date: new Date().toLocaleString(),
             exercises: list
         };
+        if (workoutText === "") {
+            newWorkout.name = "Unnamed Workout";
+        }
         setWorkoutLog(prev => [...prev, newWorkout]);
         setList([]);
         setWorkoutText("");
@@ -75,7 +77,7 @@ function Workout() {
             <div>
                 <WorkoutHistory
                     workoutLog={workoutLog}
-                    setWorkoutLog={setWorkoutLog}
+                    setWorkoutLog={setWorkoutLog}                 
                 />
             </div>
         </div>
