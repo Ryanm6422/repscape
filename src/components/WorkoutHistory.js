@@ -1,9 +1,31 @@
 import { useState } from "react";
 import WorkoutTemplate from "../components/WorkoutTemplate";
 
-function WorkoutHistory({ workoutLog, setWorkoutLog}) {
+function WorkoutHistory({setList, workoutLog, setWorkoutLog}) {
 
     const [templateLog, setTemplateLog] = useState([]);
+    const [nameText, setNameText] = useState("");
+    const [nameEdit, setNameEdit] = useState(null);
+
+    const handleNameEdit = (workoutName, index) => {
+        setNameEdit(index);
+        setNameText(workoutName);
+    };
+
+    const editName = (indexToEdit) => {
+        if (!nameText || nameText.trim === "") return;
+        const newItems = workoutLog.map((workout, index) => {
+            if (index === indexToEdit) {
+                return {name: nameText, date: workout.date, exercises:workout.exercises};
+            }
+            else {
+                return workout;
+            }
+        });
+        setWorkoutLog(newItems);
+        setNameText("");
+        setNameEdit(null);
+    };
 
     const saveTemplate = (workoutIndex) => {
         setTemplateLog(prev => [...prev, workoutLog[workoutIndex]]);
@@ -20,12 +42,24 @@ function WorkoutHistory({ workoutLog, setWorkoutLog}) {
             <ul>
                 {workoutLog.map((workout, index) => (
                     <li key={index}>
-                        <strong>{workout.name} <br />
-                        {workout.date}</strong>
+                         <span onClick={() => handleNameEdit(workout.name, index)}>                        
+                            {index === nameEdit ?
+                            <input 
+                            value={nameText}
+                            onChange={(e) => setNameText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    editName(index);
+                                }
+                            }}
+                            />
+                            : <span><strong>{workout.name}</strong></span>}</span>
+                        <br />
+                        <strong>{workout.date}</strong>
                         <ul>
                             {workout.exercises.map((exercise, i) => (
                                 <li key={i}>
-                                    {exercise.exerciseName} - {exercise.reps.length} {exercise.reps.length === 1 ? "set" : "sets"}
+                                {exercise.exerciseName} - {exercise.reps.length} {exercise.reps.length === 1 ? "set" : "sets"}
                                 </li>
                             ))}
                         </ul>
@@ -36,6 +70,7 @@ function WorkoutHistory({ workoutLog, setWorkoutLog}) {
             </ul>
             <div>
                 <WorkoutTemplate
+                    setList={setList}
                     templateLog={templateLog}
                     setTemplateLog={setTemplateLog}                 
                 />

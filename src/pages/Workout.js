@@ -76,6 +76,7 @@ function Workout() {
             </button>
             <div>
                 <WorkoutHistory
+                    setList={setList}
                     workoutLog={workoutLog}
                     setWorkoutLog={setWorkoutLog}                 
                 />

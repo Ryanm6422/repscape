@@ -1,8 +1,38 @@
-function WorkoutTemplate({templateLog, setTemplateLog}) {
+import {useState} from "react";
+
+function WorkoutTemplate({setList, templateLog, setTemplateLog}) {
+
+    const [nameText, setNameText] = useState("");
+    const [nameEdit, setNameEdit] = useState(null);
+
+    const handleNameEdit = (workoutName, index) => {
+        setNameEdit(index);
+        setNameText(workoutName);
+    };
+
+    const editName = (indexToEdit) => {
+        if (!nameText || nameText.trim === "") return;
+        const newItems = templateLog.map((workout, index) => {
+            if (index === indexToEdit) {
+                return {name: nameText, date: workout.date, exercises:workout.exercises};
+            }
+            else {
+                return workout;
+            }
+        });
+        setTemplateLog(newItems);
+        setNameText("");
+        setNameEdit(null);
+    };
 
     const deleteTemplate = (indexToDelete) => {
         const newItems = templateLog.filter((_, index) => index !== indexToDelete);
         setTemplateLog(newItems);
+    };
+
+    const applyTemplate = (index) => {
+        const exercises = templateLog[index]?.exercises ?? [];
+        setList(exercises.map(e => ({...e, reps: [...e.reps]})));
     };
 
     return (
@@ -11,8 +41,20 @@ function WorkoutTemplate({templateLog, setTemplateLog}) {
             <ul>
                 {templateLog.map((workout, index) => (
                     <li key={index}>
-                        <strong>{workout.name} <br />
-                        {workout.date}</strong>
+                         <span onClick={() => handleNameEdit(workout.name, index)}>                        
+                            {index === nameEdit ?
+                            <input 
+                            value={nameText}
+                            onChange={(e) => setNameText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    editName(index);
+                                }
+                            }}
+                            />
+                            : <span><strong>{workout.name}</strong></span>}</span>
+                        <br />
+                        <strong>{workout.date}</strong>
                         <ul>
                             {workout.exercises.map((exercise, i) => (
                                 <li key={i}>
@@ -21,6 +63,7 @@ function WorkoutTemplate({templateLog, setTemplateLog}) {
                             ))}
                         </ul>
                         <button onClick = {() => deleteTemplate(index)}>❌</button>
+                        <button onClick = {() => applyTemplate(index)}>Use Template</button>
                     </li>
                 ))}
             </ul>
