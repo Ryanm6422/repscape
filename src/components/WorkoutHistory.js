@@ -51,6 +51,10 @@ function WorkoutHistory({setList, workoutLog, setWorkoutLog}) {
                                 if (e.key === "Enter") {
                                     editName(index);
                                 }
+                                else if (e.key === "Escape") {
+                                    setNameEdit(null);
+                                    setNameText("");
+                                }
                             }}
                             />
                             : <span><strong>{workout.name}</strong></span>}</span>

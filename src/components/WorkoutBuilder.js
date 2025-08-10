@@ -131,6 +131,10 @@ function WorkoutBuilder({ list, setList }) {
                                 if (e.key === "Enter") {
                                     editExercise(index);
                                 }
+                                else if (e.key === "Escape") {
+                                    setExerciseEdit(null);
+                                    setEditText("");
+                                }
                             }}
                             />
                             : <span>{exercise.exerciseName}</span>}</span>
@@ -147,6 +151,10 @@ function WorkoutBuilder({ list, setList }) {
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
                                             editReps(index, repIndex);
+                                        }
+                                        else if (e.key === "Escape") {
+                                            setRepEdit({exerciseIndex: null, repIndex: null});
+                                            setRepEditText("");
                                         }
                                     }}
                                     />
