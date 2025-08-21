@@ -48,6 +48,7 @@ function Workout() {
 
     return (
         <div>
+            <div className="container">
             {showPopUp && (
             <div className="popup">
                 <div className="popup-content">
@@ -65,6 +66,8 @@ function Workout() {
             )}
 
             <h1>Welcome to RepScape!</h1>
+            <section className="card">
+            <div className="grid">
             <WorkoutBuilder 
                 list={list}
                 setList={setList}
@@ -74,6 +77,8 @@ function Workout() {
                 setShowPopUp(true);
             }}>Finish Workout
             </button>
+            </div>
+            <div className="grid">
             <div>
                 <WorkoutHistory
                     setList={setList}
@@ -81,7 +86,10 @@ function Workout() {
                     setWorkoutLog={setWorkoutLog}                 
                 />
             </div>
+            </div>
+            </section>
         </div>
+    </div>
     );
 }
 

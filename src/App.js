@@ -1,4 +1,5 @@
-import './App.css';
+import './styles/tokens.css';
+import './styles/app.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Workout from "./pages/Workout";
 
