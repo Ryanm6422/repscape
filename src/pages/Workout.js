@@ -66,8 +66,8 @@ function Workout() {
             )}
 
             <h1>Welcome to RepScape!</h1>
-            <section className="card">
-            <div className="grid">
+            <section className="grid">
+            <div className="card">
             <WorkoutBuilder 
                 list={list}
                 setList={setList}
@@ -78,14 +78,12 @@ function Workout() {
             }}>Finish Workout
             </button>
             </div>
-            <div className="grid">
             <div>
                 <WorkoutHistory
                     setList={setList}
                     workoutLog={workoutLog}
                     setWorkoutLog={setWorkoutLog}                 
                 />
-            </div>
             </div>
             </section>
         </div>

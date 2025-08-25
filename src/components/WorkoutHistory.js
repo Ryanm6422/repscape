@@ -38,6 +38,7 @@ function WorkoutHistory({setList, workoutLog, setWorkoutLog}) {
 
     return (
         <div>
+        <div className="card">
         <h2>Workout History</h2>
             <ul>
                 {workoutLog.map((workout, index) => (
@@ -72,12 +73,15 @@ function WorkoutHistory({setList, workoutLog, setWorkoutLog}) {
                     </li>
                 ))}
             </ul>
+            </div>
+            <div className="card">
             <div>
                 <WorkoutTemplate
                     setList={setList}
                     templateLog={templateLog}
                     setTemplateLog={setTemplateLog}                 
                 />
+            </div>
             </div>
         </div>
     );
