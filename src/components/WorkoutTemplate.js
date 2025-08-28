@@ -32,7 +32,7 @@ function WorkoutTemplate({setList, templateLog, setTemplateLog}) {
 
     const applyTemplate = (index) => {
         const exercises = templateLog[index]?.exercises ?? [];
-        setList(exercises.map(e => ({...e, reps: [...e.reps]})));
+        setList(exercises.map(e => ({...e, sets: [...e.sets]})));
     };
 
     return (
@@ -62,7 +62,7 @@ function WorkoutTemplate({setList, templateLog, setTemplateLog}) {
                         <ul>
                             {workout.exercises.map((exercise, i) => (
                                 <li key={i}>
-                                    {exercise.exerciseName} - {exercise.reps.length} {exercise.reps.length === 1 ? "set" : "sets"}
+                                    {exercise.exerciseName} - {exercise.sets.length} {exercise.sets.length === 1 ? "set" : "sets"}
                                 </li>
                             ))}
                         </ul>

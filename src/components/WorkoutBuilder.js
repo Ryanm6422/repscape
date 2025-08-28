@@ -2,13 +2,17 @@ import React from "react";
 import { useState } from "react";
 
 function WorkoutBuilder({ list, setList }) {
+    const [exerciseID, setExerciseID] = useState();
     const [exerciseText, setExerciseText] = useState("");
     const [repText, setRepText] = useState("");
     const [thisExerciseIndex, setThisExerciseIndex] = useState(null);
     const [exerciseEdit, setExerciseEdit] = useState(null);
-    const [repEdit, setRepEdit] = useState({exerciseIndex: null, repIndex: null});
+    const [repEdit, setRepEdit] = useState({exerciseIndex: null, repIndex: null, weightIndex: null});
     const [editText, setEditText] = useState("");
     const [repEditText, setRepEditText] = useState("");
+    const [weightText, setWeightText] = useState("");
+    const [weightEdit, setWeightEdit] = useState({exerciseIndex: null, repIndex: null, weightIndex: null});
+    const [weightEditText, setWeightEditText] = useState("");
 
     const handleText = (event) => {
         setExerciseText(event.target.value);
@@ -19,29 +23,36 @@ function WorkoutBuilder({ list, setList }) {
         setEditText(exercise);
     };
 
-    const handleRepEdit = (rep, exerciseInd, repInd) => {
-        setRepEdit({exerciseIndex: exerciseInd, repIndex: repInd});
+    const handleRepEdit = (rep, exerciseInd, setInd) => {
+        setRepEdit({exerciseIndex: exerciseInd, setIndex: setInd});
         setRepEditText(rep);
+    };
+
+    const handleWeightEdit = (weight, exerciseInd, setInd) => {
+        setWeightEdit({exerciseIndex: exerciseInd, setIndex: setInd});
+        setWeightEditText(weight);
     };
 
     const addExercise = () => {
         if (!exerciseText || exerciseText.trim === "") return;
-        setList([...list, {exerciseName: exerciseText, reps: []}]);
+        setList([...list, {exerciseID: exerciseID, exerciseName: exerciseText, sets: []}]);
         setExerciseText("");
     };
 
-    const addRep = () => {
-        if (!repText || repText.trim === "" || thisExerciseIndex === null || thisExerciseIndex >= list.length) return;
+    const addSet = () => {
+        if (!repText || repText.trim() === "" || thisExerciseIndex === null || thisExerciseIndex >= list.length) return;
+        if (!weightText || weightText.trim() === "" || thisExerciseIndex === null || thisExerciseIndex >= list.length) return;
         setList(prevList =>
             prevList.map((exercise, index) => {
                 if (index === thisExerciseIndex) {
-                    return { ...exercise, reps:[...exercise.reps, repText]};
+                    return { ...exercise, sets:[...exercise.sets, {reps: repText, weight: weightText}]};
                 } else {
                     return exercise;
                 }
             })
         );
         setRepText("");
+        setWeightText("");
     };
 
     const deleteExercise = (indexToDelete) => {
@@ -49,10 +60,10 @@ function WorkoutBuilder({ list, setList }) {
         setList(newItems);
     };
 
-    const deleteRep = (indexToDelete, repIndexToDelete) => {
+    const deleteSet = (indexToDelete, setIndexToDelete) => {
         const newItems = list.map((exercise, index) => {
             if (index === indexToDelete) {
-                return { ...exercise, reps: exercise.reps.filter((_, repIndex) => repIndex !== repIndexToDelete)};
+                return { ...exercise, sets: exercise.sets.filter((_, setIndex) => setIndex !== setIndexToDelete)};
             }
             else {
                 return exercise;
@@ -65,7 +76,7 @@ function WorkoutBuilder({ list, setList }) {
         if (!editText || editText.trim === "") return;
         const newItems = list.map((exercise, index) => {
             if (index === indexToEdit) {
-                return { exerciseName: editText, reps: exercise.reps};
+                return { exerciseName: editText, reps: exercise.reps, weight: exercise.weight};
             }
             else {
                 return exercise;
@@ -76,19 +87,19 @@ function WorkoutBuilder({ list, setList }) {
         setExerciseEdit(null);
     };
 
-    const editReps = (indexToEdit, repIndexToEdit) => {
+    const editReps = (indexToEdit, setIndexToEdit) => {
         if (!repEditText || repEditText.trim === "") return;
         const newItems = list.map((exercise, index) => {
             if (index === indexToEdit) {
-                const newRepList = exercise.reps.map((rep, repIndex) => {
-                    if (repIndex === repIndexToEdit) {
-                        return repEditText;
+                const newSetList = exercise.sets.map((set, setIndex) => {
+                    if (setIndex === setIndexToEdit) {
+                        return {reps: repEditText, weight: set.weight};
                     }
                     else {
-                        return rep;
+                        return set;
                     }
                 });
-                return {...exercise, reps: newRepList};
+                return {...exercise, sets: newSetList};
             }
             else {
                 return exercise;
@@ -96,7 +107,30 @@ function WorkoutBuilder({ list, setList }) {
         });
         setList(newItems);
         setRepEditText("");
-        setRepEdit({exerciseIndex: null, repIndex: null});
+        setRepEdit({exerciseIndex: null, setIndex: null});
+    };
+
+    const editWeight = (indexToEdit, setIndexToEdit) => {
+        if (!weightEditText || weightEditText.trim === "") return;
+        const newItems = list.map((exercise, index) => {
+            if (index === indexToEdit) {
+                const newSetList = exercise.sets.map((set, setIndex) => {
+                    if (setIndex === setIndexToEdit) {
+                        return {reps: set.reps, weight: weightEditText};
+                    }
+                    else {
+                        return set;
+                    }
+                });
+                return {...exercise, sets: newSetList};
+            }
+            else {
+                return exercise;
+            }
+        });
+        setList(newItems);
+        setWeightEditText("");
+        setWeightEdit({exerciseIndex: null, setIndex: null});
     };
 
     return (
@@ -116,8 +150,15 @@ function WorkoutBuilder({ list, setList }) {
                 onChange={(e) => setRepText(e.target.value)}
                 placeholder="Enter text here"
             />
-            
-            <button onClick={addRep}>Add</button>
+
+            <h2>Insert Weight (lbs): </h2>
+            <input 
+                type="number"
+                value={weightText}
+                onChange={(e) => setWeightText(e.target.value)}
+                placeholder="Enter text here"
+            />
+            <button onClick={addSet}>Add</button>
 
             <ul>
                 {list.map((exercise, index) => (
@@ -141,25 +182,43 @@ function WorkoutBuilder({ list, setList }) {
                         <button onClick={() => deleteExercise(index)}>❌</button>
                         <button onClick = {() => setThisExerciseIndex(index)}>Select</button>
                         <ul>
-                            {exercise.reps.map((rep, repIndex) => (
-                                <li key={repIndex}> Set {repIndex + 1}: <span onClick={() => handleRepEdit(rep, index, repIndex)}>                            
-                                {repIndex === repEdit.repIndex && index === repEdit.exerciseIndex ?
+                            {exercise.sets.map((set, setIndex) => (
+                                <li key={setIndex}> Set {setIndex + 1}: <ul><span onClick={() => handleRepEdit(set.reps, index, setIndex)}>                            
+                                {setIndex === repEdit.setIndex && index === repEdit.exerciseIndex ?
                                 <input
                                     type="number"
                                     value={repEditText}
                                     onChange={(e) => setRepEditText(e.target.value)}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
-                                            editReps(index, repIndex);
+                                            editReps(index, setIndex);
                                         }
                                         else if (e.key === "Escape") {
-                                            setRepEdit({exerciseIndex: null, repIndex: null});
+                                            setRepEdit({exerciseIndex: null, setIndex: null});
                                             setRepEditText("");
                                         }
                                     }}
                                     />
-                                    : <span>{rep} {parseInt(rep) === 1 ? "rep" : "reps"}</span>}</span>
-                                <button onClick = {() => deleteRep(index, repIndex)}>❌</button></li>
+                                    : <span>{set.reps} {parseInt(set.reps) === 1 ? "rep" : "reps"}</span>}</span>
+                                <br />
+                                <span onClick={() => handleWeightEdit(set.weight, index, setIndex)}>                            
+                                    {setIndex === weightEdit.setIndex && index === weightEdit.exerciseIndex ?
+                                    <input
+                                        type="number"
+                                        value={weightEditText}
+                                        onChange={(e) => setWeightEditText(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                editWeight(index, setIndex);
+                                            }
+                                            else if (e.key === "Escape") {
+                                                setWeightEdit({exerciseIndex: null, setIndex: null});
+                                                setWeightEditText("");
+                                            }
+                                        }}
+                                        />
+                                        : <span>{set.weight} {parseInt(set.weight) === 1 ? "lb" : "lbs"}</span>}</span>
+                                    <button onClick = {() => deleteSet(index, setIndex)}>❌</button></ul></li>
                             ))}
                         </ul>
                     </li>

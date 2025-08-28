@@ -10,6 +10,7 @@ function Workout() {
     const [workoutLog, setWorkoutLog] = useState([]);
     const [workoutText, setWorkoutText] = useState("");
     const [showPopUp, setShowPopUp] = useState(false);
+    const [workoutID, setWorkoutID] = useState();
 
     const handleText = (event) => {
         setWorkoutText(event.target.value);
@@ -17,6 +18,7 @@ function Workout() {
 
     const addWorkoutName = () => {
         const newWorkout = {
+            id: workoutID,
             name: workoutText,
             date: new Date().toLocaleString(),
             exercises: list
